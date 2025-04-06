@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-class TaskController extends Controller
+class UserTaskController extends Controller
 {
     public function list(Request $request)
     {

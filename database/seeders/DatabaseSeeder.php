@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\TTask;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -15,11 +16,20 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'admin@gmail.com',
-            'password' => bcrypt('asdasdasd'),
-            'role' => "0"
-        ]);
+        // User::factory()->create([
+        //     'name' => 'Test User',
+        //     'email' => 'admin@gmail.com',
+        //     'password' => bcrypt('asdasdasd'),
+        //     'role' => "0"
+        // ]);
+
+        for ($i = 0; $i < 20; $i++) {
+            TTask::create([
+                "user_id" => 12,
+                "keterangan" => "Test Task $i",
+                "created_at" => now(),
+                "deadline" => now()->addDays(3),
+            ]);
+        }
     }
 }

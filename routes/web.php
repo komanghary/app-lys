@@ -1,7 +1,9 @@
 <?php
 
+use App\Http\Controllers\ManagerTaskController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TaskController;
+use App\Http\Controllers\UserTaskController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -22,11 +24,17 @@ Route::middleware(['auth'])->group(function () {
         return view('presensi');
     })->name('presensi');
 
-    Route::get('/task/list', [TaskController::class, "list"])->name('task.list');
+    Route::get('/task/list', [UserTaskController::class, "list"])->name('task.list');
 
     Route::get('/task/complated', function () {
         return view('task.complated');
     })->name('task.complated');
+
+
+    // Manager
+    Route::get('/task-manager', [ManagerTaskController::class, "index"])->name('task.manager.list');
+    Route::get('/task-manager/add', [ManagerTaskController::class, "add"])->name('task.manager.add');
+    Route::post('/task-manager/add', [ManagerTaskController::class, "store"])->name('task.manager.store');
 });
 
 
