@@ -31,6 +31,25 @@
                         </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
+                        @foreach ($tasks as $r)
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 table-fixed">
+                                    {{ $r->created_at }}
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 table-fixed">
+                                    {{ $r->deadline }}
+                                </td>
+                                <td class="px-6 py-4 whitespace-normal text-sm text-gray-900 table-fixed">
+                                    {{ $r->keterangan }}
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium table-fixed">
+                                    <a href="#"
+                                        class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2">Dont</a>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                    {{-- <tbody class="bg-white divide-y divide-gray-200">
                         <tr>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 table-fixed">
                                 7/4/2025 10:00 AM
@@ -68,7 +87,7 @@
                                 <a href="" type="button"
                                     class="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">Hapus</a>
                             </td>
-                    </tbody>
+                    </tbody> --}}
                 </table>
             </div>
         </div>
