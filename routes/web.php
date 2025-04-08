@@ -30,11 +30,13 @@ Route::middleware(['auth'])->group(function () {
         return view('task.complated');
     })->name('task.complated');
 
-
     // Manager
     Route::get('/task-manager', [ManagerTaskController::class, "index"])->name('task.manager.list');
     Route::get('/task-manager/add', [ManagerTaskController::class, "add"])->name('task.manager.add');
     Route::post('/task-manager/add', [ManagerTaskController::class, "store"])->name('task.manager.store');
+    Route::get('/task-manager/edit/{id}', [ManagerTaskController::class, "edit"])->name('task.manager.edit');
+    Route::post('/task-manager/edit/{id}', [ManagerTaskController::class, "update"])->name('task.manager.update');
+    Route::get('/task-manager/delete/{id}', [ManagerTaskController::class, "delete"])->name('task.manager.delete');
 });
 
 
