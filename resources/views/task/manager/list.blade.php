@@ -36,10 +36,22 @@
                 </div>
                 @endif
 
-                <div class="text-right mb-4">
-                    <a href="{{ route('task.manager.add') }}"
-                        class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Tambah
-                        Task</a>
+                <div class="flex">
+                    <div class="flex flex-auto">
+                        <form method="GET" action="{{ route('task.manager.list') }}" class="flex items-center mb-4">
+                            <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari task..."
+                                class="border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 me-2">
+                            <button type="submit"
+                                class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
+                                Cari
+                            </button>
+                        </form>
+                    </div>
+                    <div class="flex">
+                        <a href="{{ route('task.manager.add') }}"
+                            class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg px-5 py-2.5 me-2 mb-4 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Tambah
+                            Task</a>
+                    </div>
                 </div>
                 <table class="min-w-full divide-y divide-gray-200 ">
                     <thead class="bg-gray-50">
@@ -93,7 +105,9 @@
                     </tbody>
                 </table>
                 <hr>
-                {{ $tasks->links() }}
+                <div class="mt-2">
+                    {{ $tasks->appends(['search' => request('search')])->links() }}
+                </div>
             </div>
         </div>
     </div>

@@ -10,8 +10,16 @@ class TTask extends Model
     use SoftDeletes;
     protected $guarded = [];
 
-    function user()
+    public function user()
     {
         return $this->belongsTo(User::class, foreignKey: "user_id");
     }
+
+    public function scopeSearch($query, $term)
+    {
+        return $query->where("keterangan", "like", "%$term%")->orWhereHas('user', function ($q) use ($term) {
+            $q->where('name', 'like', "%{$term}%");
+        });
+    }
+
 }
