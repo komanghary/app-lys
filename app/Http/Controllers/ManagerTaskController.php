@@ -36,7 +36,7 @@ class ManagerTaskController extends Controller
             "user_id" => $request->user_id,
             "keterangan" => $request->keterangan,
             "deadline" => "$request->year-$request->month-$request->day $request->time",
-            "file" => $request->upload_file->store("task"),
+            "file" => $request->upload_file->store("task", "public"),
         ]);
 
         return redirect()->route("task.manager.list")->with("success", "Berhasil menambahkan task");
@@ -66,7 +66,7 @@ class ManagerTaskController extends Controller
             "user_id" => $request->user_id,
             "keterangan" => $request->keterangan,
             "deadline" => "$request->year-$request->month-$request->day $request->time",
-            "file" => $request->upload_file && $request->upload_file->store("task"),
+            "file" => $request->upload_file && $request->upload_file->store("task", "public"),
         ]);
 
         return redirect()->route("task.manager.list")->with("success", "Berhasil mengupdate task");
