@@ -14,7 +14,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        User::factory(10)->create();
+        // User::factory(10)->create();
 
         // User::factory()->create([
         //     'name' => 'Test User',
@@ -23,13 +23,17 @@ class DatabaseSeeder extends Seeder
         //     'role' => "0"
         // ]);
 
-        // for ($i = 0; $i < 20; $i++) {
-        //     TTask::create([
-        //         "user_id" => 1,
-        //         "keterangan" => "Test Task $i",
-        //         "created_at" => now(),
-        //         "deadline" => now()->addDays(3),
-        //     ]);
-        // }
+        $user = User::where("role", "1")->get();
+
+        foreach ($user as $r) {
+            for ($i = 0; $i < 20; $i++) {
+                TTask::create([
+                    "user_id" => $r->id,
+                    "keterangan" => "Test Task $i",
+                    "created_at" => now(),
+                    "deadline" => now()->addDays(3),
+                ]);
+            }
+        }
     }
 }
