@@ -137,11 +137,10 @@
                         <p class="mt-2 text-sm text-red-600 dark:text-red-500">{{ $message }}</p>
                         @enderror
                     </div>
-                    @if (session('uploaded_file_path'))
+                    @if ($task?->file)
                     <div class="mb-6">
                         <label class="block mb-2 text-sm font-medium text-gray-900">File yang diupload:</label>
-                        <a href="{{ route('private.file.show', ['path' => session('uploaded_file_path')]) }}"
-                            class="text-blue-600 hover:underline">
+                        <a href="{{ asset('storage/'.$task?->file) }}" class="text-blue-600 hover:underline">
                             Lihat file
                         </a>
                     </div>

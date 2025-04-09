@@ -62,12 +62,14 @@ class ManagerTaskController extends Controller
 
         $task = TTask::findOrFail($id);
 
-        $task->update([
-            "user_id" => $request->user_id,
-            "keterangan" => $request->keterangan,
-            "deadline" => "$request->year-$request->month-$request->day $request->time",
-            "file" => $request->upload_file && $request->upload_file->store("task", "public"),
-        ]);
+        $task->user_id = $request->user_id;
+        $task->keterangan = $request->keterangan;
+        $task->deadline = "$request->year-$request->month-$request->day $request->time";
+        if ($request->upload_file) {
+            $task->file = $request->upload_file->store("task", "public");
+        }
+
+        $task->save();
 
         return redirect()->route("task.manager.list")->with("success", "Berhasil mengupdate task");
     }
