@@ -22,16 +22,14 @@ class ManagerTaskController extends Controller
 
     public function store(Request $request)
     {
-        // $request->validate([
-        //     "keterangan" => "required",
-        //     "time" => "required",
-        //     "day" => "required|numeric",
-        //     "mounth" => "required|numeric",
-        //     "year" => "required|numeric",
-        //     "file" => "required|max:2048",
-        // ]);
-
-        // dd($request->all());
+        $request->validate([
+            "keterangan" => "required",
+            "time" => "required",
+            "day" => "required|numeric",
+            "month" => "required|numeric",
+            "year" => "required|numeric",
+            "upload_file" => "required|max:2048",
+        ]);
 
         TTask::create([
             "user_id" => $request->user_id,

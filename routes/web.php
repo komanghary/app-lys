@@ -30,6 +30,8 @@ Route::middleware(['auth'])->group(function () {
         return view('task.complated');
     })->name('task.complated');
 
+    Route::get('/tasks/{id}/preview', [UserTaskController::class, 'preview'])->name('tasks.preview');
+
 
     // Manager
     Route::get('/task-manager', [ManagerTaskController::class, "index"])->name('task.manager.list');
