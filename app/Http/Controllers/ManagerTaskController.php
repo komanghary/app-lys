@@ -57,7 +57,7 @@ class ManagerTaskController extends Controller
             "day" => "required|numeric",
             "month" => "required|numeric",
             "year" => "required|numeric",
-            "upload_file" => "max:2048",
+            "upload_file" => "max:1024000", // 1GB in kilobytes
         ]);
 
         $task = TTask::findOrFail($id);

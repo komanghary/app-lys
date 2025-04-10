@@ -40,7 +40,7 @@
                                 @endphp
 
                                 <td
-                                    class="text-sm text-center font-semibold
+                                    class="px-6 py-4 text-sm text-gray-900 whitespace-nowrap
                                 {{ $deadline->greaterThan($now) ? 'text-green-600' : 'text-red-600' }}">
                                     {{ $deadline->diffForHumans($now, [
                                         'parts' => 3,
@@ -54,7 +54,7 @@
                                 @endphp
 
                                 <td
-                                    class="px-6 py-4 text-sm text-center font-semibold
+                                    class="px-6 py-4 text-sm text-gray-900 whitespace-nowrap
                                     {{ $deadline->isPast() ? 'text-red-600' : 'text-green-600' }}">
                                     {{ $deadline->translatedFormat('l, d F - H:i') }}
                                 </td>
@@ -125,7 +125,6 @@
 
 
                                 <td class="px-6 py-4 whitespace-normal text-sm text-gray-900">{{ $r->keterangan }}</td>
-
                             </tr>
                         @endforeach
                     </tbody>
