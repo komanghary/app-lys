@@ -36,7 +36,7 @@
                     ]) }}
                 </p>
                 <div class="mb-6">
-                    <h3 class="text-lg font-bold">File yang diupload:</h3>
+                    <h3 class="text-lg font-bold">File:</h3>
                     @if ($task->file)
                         <a href="{{ asset('storage/' . $task->file) }}"
                             class="inline-block text-white bg-blue-600 rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 mt-2 p-2 rounded-lg">Lihat
@@ -45,24 +45,34 @@
                         <p class="text-gray-500">Tidak ada file yang diupload.</p>
                     @endif
                 </div>
-                <form action="">
+                @if (!$task->file_done)
+                    <form action="{{ route('task.upload', $task->id) }}" method="POST" enctype="multipart/form-data">
+                        @csrf
+                        <div class="mb-6">
+                            <p class="text-lg font-bold" for="file_input">Upload Task</p>
+                            <input name="upload_file"
+                                class="block text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none px-3 py-3"
+                                id="file_input" type="file">
+                            @error('upload_file')
+                                <p class="mt-2 text-sm text-red-600 dark:text-red-500">{{ $message }}</p>
+                            @enderror
+                        </div>
+                        <div class="flex">
+                            <button type="submit"
+                                class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                                Submit
+                            </button>
+                        </div>
+                    </form>
+                @else
                     <div class="mb-6">
-                        <p class="text-lg font-bold " for="file_input">Upload
-                            Task</p>
-                        <input name="upload_file"
-                            class="block text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none px-3 py-3"
-                            id="file_input" type="file">
-                        @error('upload_file')
-                            <p class="mt-2 text-sm text-red-600 dark:text-red-500">{{ $message }}</p>
-                        @enderror
+                        <h3 class="text-lg font-bold">File yang sudah kamu upload :</h3>
+                        <a href="{{ asset('storage/' . $task->file_done) }}"
+                            class="inline-block text-white bg-green-600 rounded hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 mt-2 p-2 rounded-lg">
+                            Lihat File
+                        </a>
                     </div>
-                    <div class="flex">
-                        <button type="submit"
-                            class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
-                            Submit
-                        </button>
-                    </div>
-                </form>
+                @endif
             </div>
         </div>
     </div>

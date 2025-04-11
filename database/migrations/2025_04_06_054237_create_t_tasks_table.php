@@ -15,7 +15,7 @@ return new class extends Migration {
             $table->foreignId("user_id")->constrained("users");
             $table->string('keterangan');
             $table->datetime('deadline');
-            $table->boolean("revisi")->default(false)->comment("Apakah task ini sudah direvisi?");
+            $table->integer("revisi");
             $table->boolean("status")->default(false)->comment("Apakah task ini sudah selesai?");
             $table->timestamps();
             $table->softDeletes();

@@ -72,64 +72,6 @@
                     </tbody>
                 </table>
             </div>
-
-            <!-- TABEL 2 -->
-            <div class="bg-white p-6 shadow rounded-lg overflow-x-auto">
-                <h2 class="font-semibold text-xl text-gray-800 leading-tight m-4">
-                    Task Pending
-                </h2>
-                <p class=" text-gray-800 leading-tight m-4 text-sm">
-                    Menunggu Respon dari Manager
-                </p>
-                <table class="min-w-full divide-y divide-gray-200 w-full">
-                    <thead class="bg-gray-50">
-                        <tr>
-                            <th
-                                class="px-6 py-3 text-left text-xs font-medium w-10 text-gray-500 uppercase tracking-wider">
-                                Waktu</th>
-                            <th
-                                class="px-6 py-3 text-left text-xs font-medium w-10 text-gray-500 uppercase tracking-wider">
-                                Deadline</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Keterangan</th>
-
-                        </tr>
-                    </thead>
-                    <tbody class="bg-white divide-y divide-gray-200">
-                        @foreach ($tasks as $r)
-                            <tr>
-                                @php
-                                    $deadline = \Carbon\Carbon::parse($r->deadline);
-                                    $now = \Carbon\Carbon::now();
-                                @endphp
-
-                                <td
-                                    class="text-sm text-center font-semibold
-                                {{ $deadline->greaterThan($now) ? 'text-green-600' : 'text-red-600' }}">
-                                    {{ $deadline->diffForHumans($now, [
-                                        'parts' => 3,
-                                        'short' => true,
-                                        'syntax' => \Carbon\CarbonInterface::DIFF_RELATIVE_TO_NOW,
-                                    ]) }}
-                                </td>
-
-                                @php
-                                    $deadline = \Carbon\Carbon::parse($r->deadline);
-                                @endphp
-
-                                <td
-                                    class="px-6 py-4 text-sm text-center font-semibold
-                                    {{ $deadline->isPast() ? 'text-red-600' : 'text-green-600' }}">
-                                    {{ $deadline->translatedFormat('l, d F - H:i') }}
-                                </td>
-
-
-                                <td class="px-6 py-4 whitespace-normal text-sm text-gray-900">{{ $r->keterangan }}</td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
         </div>
     </div>
 
