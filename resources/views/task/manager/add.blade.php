@@ -124,7 +124,7 @@
                     </div>
                     <div class="mb-6">
                         <label for="keterangan" class="block mb-2 text-sm font-medium text-gray-900 ">Keterangan</label>
-                        <textarea type="keterangan" disabled id="keterangan" name="keterangan"
+                        <textarea type="keterangan" {{-- disabled  --}} id="keterangan" name="keterangan"
                             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
                             placeholder="Keterangan">{{ old('keterangan', $task?->keterangan) }}</textarea>
                         @error('keterangan')
@@ -152,20 +152,53 @@
                     @endif
                     <button type="submit"
                         class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Submit</button>
-                    <button type="button"
-                        class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                        id="btnedit">Edit</button>
                 </form>
             </div>
         </div>
     </div>
 </x-app-layout>
+
 <script>
-    var btnedit = document.getElementById('btnedit');
-    btnedit.addEventListener('click', function() {
-        console.log('clicked');
-        var keterangan = document.getElementById('keterangan');
-        keterangan.removeAttribute('disabled');
-        btnedit.textContent = 'Simpan';
+    document.addEventListener('DOMContentLoaded', function() {
+        const daySelect = document.getElementById('day');
+        const monthSelect = document.getElementById('month');
+        const yearSelect = document.getElementById('year');
+        const timeInput = document.getElementById('end-time');
+
+        function disablePastDates() {
+            const selectedDate = new Date(
+                yearSelect.value,
+                monthSelect.value - 1,
+                daySelect.value
+            );
+
+            const now = new Date();
+            now.setSeconds(0, 0); // biar lebih akurat ke menitnya
+            const selectedTime = timeInput.value;
+
+            if (selectedDate.toDateString() === now.toDateString() && selectedTime) {
+                const selectedDateTime = new Date(
+                    yearSelect.value,
+                    monthSelect.value - 1,
+                    daySelect.value,
+                    ...selectedTime.split(':')
+                );
+
+                if (selectedDateTime < now) {
+                    alert('Deadline tidak boleh di waktu lampau!');
+                    timeInput.value = "";
+                }
+            } else if (selectedDate < now) {
+                alert('Tanggal tidak boleh di masa lalu!');
+                daySelect.value = now.getDate();
+                monthSelect.value = now.getMonth() + 1;
+                yearSelect.value = now.getFullYear();
+            }
+        }
+
+        daySelect.addEventListener('change', disablePastDates);
+        monthSelect.addEventListener('change', disablePastDates);
+        yearSelect.addEventListener('change', disablePastDates);
+        timeInput.addEventListener('change', disablePastDates);
     });
 </script>

@@ -30,7 +30,7 @@ Route::middleware(['auth'])->group(function () {
         return view('task.complated');
     })->name('task.complated');
 
-    Route::get('/tasks/{id}/preview', [UserTaskController::class, 'preview'])->name('tasks.preview');
+    Route::get('/tasks/{id}/preview', [UserTaskController::class, 'preview'])->name('task.preview');
     Route::post('/task/upload/{id}', [UserTaskController::class, 'uploadFile'])->name('task.upload');
 
     // Manager

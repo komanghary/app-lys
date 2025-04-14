@@ -17,24 +17,44 @@
                     {{ $deadline->isPast() ? 'text-red-600' : 'text-green-600' }}">
                     {{ $deadline->translatedFormat('l, d F - H:i') }}
                 </p>
+                <h3 class="text-lg font-bold mt-4">Status Submit:</h3>
+                @php
+                    $deadline = \Carbon\Carbon::parse($task->deadline);
+                    $updated = \Carbon\Carbon::parse($task->updated_at);
+                @endphp
+
+                @if ($task->status == 1)
+                    @if ($updated->greaterThan($deadline))
+                        <p class="font-semibold py-4 text-red-600">
+                            Dikirim: {{ $updated->translatedFormat('l, d F - H:i') }} <br>
+                            <span class="text-sm italic">Telat
+                                {{ $deadline->diffForHumans($updated, [
+                                    'parts' => 2,
+                                    'short' => true,
+                                    'syntax' => \Carbon\CarbonInterface::DIFF_RELATIVE_TO_NOW,
+                                ]) }}</span>
+                        </p>
+                    @else
+                        <p class="font-semibold py-4 text-green-600">
+                            Dikirim: {{ $updated->translatedFormat('l, d F - H:i') }}
+                        </p>
+                    @endif
+                @else
+                    @php
+                        $now = \Carbon\Carbon::now();
+                    @endphp
+                    <p
+                        class="font-semibold py-4 {{ $deadline->greaterThan($now) ? 'text-green-600' : 'text-red-600' }}">
+                        {{ $deadline->diffForHumans($now, [
+                            'parts' => 3,
+                            'short' => true,
+                            'syntax' => \Carbon\CarbonInterface::DIFF_RELATIVE_TO_NOW,
+                        ]) }}
+                    </p>
+                @endif
 
                 <h3 class="text-lg font-bold mt-4">Keterangan:</h3>
                 <p class="py-4">{{ $task->keterangan }}</p>
-                <h3 class="text-lg font-bold mt-4">Sisa:</h3>
-                @php
-                    $deadline = \Carbon\Carbon::parse($task->deadline);
-                    $now = \Carbon\Carbon::now();
-                @endphp
-
-                <p
-                    class="font-semibold py-4
-                             {{ $deadline->greaterThan($now) ? 'text-green-600' : 'text-red-600' }}">
-                    {{ $deadline->diffForHumans($now, [
-                        'parts' => 3,
-                        'short' => true,
-                        'syntax' => \Carbon\CarbonInterface::DIFF_RELATIVE_TO_NOW,
-                    ]) }}
-                </p>
                 <div class="mb-6">
                     <h3 class="text-lg font-bold">File:</h3>
                     @if ($task->file)
@@ -66,12 +86,22 @@
                     </form>
                 @else
                     <div class="mb-6">
-                        <h3 class="text-lg font-bold">File yang sudah kamu upload :</h3>
+                        <h3 class="text-lg font-bold">File task:</h3>
                         <a href="{{ asset('storage/' . $task->file_done) }}"
                             class="inline-block text-white bg-green-600 rounded hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 mt-2 p-2 rounded-lg">
                             Lihat File
                         </a>
                     </div>
+                @endif
+                @if (Auth::user()->role == 2)
+                    <button type="button"
+                        class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                        Revisi
+                    </button>
+                    <button type="button"
+                        class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                        Complate
+                    </button>
                 @endif
             </div>
         </div>

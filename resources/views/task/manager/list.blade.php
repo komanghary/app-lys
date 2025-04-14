@@ -105,9 +105,9 @@
                                             class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 mb-2 inline-block">
                                             Edit
                                         </a>
-                                        <a href="{{ route('task.manager.delete', $r->id) }}"
+                                        <a href="{{ route('task.preview', $r->id) }}"
                                             class="text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-4 py-2 inline-block">
-                                            Hapus
+                                            Preview
                                         </a>
                                     </td>
                                 </tr>

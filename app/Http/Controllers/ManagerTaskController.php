@@ -18,11 +18,21 @@ class ManagerTaskController extends Controller
     {
         $users = User::where("role", "1")->get();
         $task = new TTask();
+        $task = new TTask();
+        $task->day = date('j');
+        $task->month = date('n');
+        $task->year = date('Y');
         return view("task.manager.add", compact("users", "task"));
     }
 
     public function store(Request $request)
     {
+        $deadline = "$request->year-$request->month-$request->day $request->time";
+
+        if (strtotime($deadline) <= time()) {
+            return back()->withErrors(['deadline' => 'Tanggal dan waktu deadline harus di masa depan.'])->withInput();
+        }
+
         $request->validate([
             "keterangan" => "required",
             "time" => "required",
