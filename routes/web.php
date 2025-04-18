@@ -40,6 +40,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/task-manager/edit/{id}', [ManagerTaskController::class, "edit"])->name('task.manager.edit');
     Route::post('/task-manager/edit/{id}', [ManagerTaskController::class, "update"])->name('task.manager.update');
     Route::get('/task-manager/delete/{id}', [ManagerTaskController::class, "delete"])->name('task.manager.delete');
+    Route::post('/task/{id}/complete', [ManagerTaskController::class, 'markAsCompleted'])->name('task.complete');
+    Route::post('/task/{id}/revisi', [ManagerTaskController::class, 'revisi'])->name('task.revisi');
+
+
 });
 
 

@@ -10,9 +10,34 @@ class ManagerTaskController extends Controller
 {
     public function index(Request $request)
     {
-        $tasks = TTask::search($request->search)->orderBy("created_at", "desc")->paginate(10);
-        return view("task.manager.list", compact("tasks"));
+        $users = \App\Models\User::orderBy('name')->get(); // ambil untuk dropdown
+
+        $query = TTask::with('user');
+
+        if ($request->user_id) {
+            $query->where('user_id', $request->user_id);
+        }
+
+        if ($request->status !== null) {
+            $query->where('status', $request->status);
+        }
+
+        if ($request->search) {
+            $query->where(function ($q) use ($request) {
+                $q->where('keterangan', 'like', '%' . $request->search . '%')
+                    ->orWhereHas('user', function ($q2) use ($request) {
+                        $q2->where('name', 'like', '%' . $request->search . '%');
+                    });
+            });
+        }
+
+        $tasks = $query->paginate(10);
+
+        return view('task.manager.list', compact('tasks', 'users'));
     }
+
+
+
 
     public function add()
     {
@@ -89,5 +114,33 @@ class ManagerTaskController extends Controller
         $task = TTask::findOrFail($id);
         $task->delete();
         return redirect()->route("task.manager.list")->with("success", "Berhasil menghapus task");
+    }
+    public function markAsCompleted($id)
+    {
+        $task = TTask::findOrFail($id);
+
+        // Cek hanya Manager yang boleh (role 2) dan task sedang On Review (status 1)
+        if (auth()->user()->role == 2 && $task->status == 1) {
+            $task->status = 2; // set ke Completed
+            $task->save();
+
+            return redirect()->route('task-manager')->with('success', 'Task berhasil diselesaikan.');
+        }
+
+        return redirect()->route('task-manager')->with('success', 'Task berhasil diselesaikan.');
+    }
+    public function revisi($id)
+    {
+        $taskLama = TTask::findOrFail($id);
+
+        $taskBaru = TTask::create([
+            'user_id' => $taskLama->user_id,
+            'deadline' => $taskLama->deadline,
+            'keterangan' => $taskLama->keterangan,
+            'revisi' => $taskLama->id,
+            'status' => 0,
+        ]);
+
+        return redirect()->route('task.manager.edit', $taskBaru->id);
     }
 }

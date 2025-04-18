@@ -29,7 +29,7 @@
                         </button>
                     </form>
                 </div>
-                <table class="min-w-full divide-y divide-gray-200 w-full">
+                <table class=" divide-y divide-gray-200 w-full">
                     <thead class="bg-gray-50">
                         <tr>
                             @php
@@ -45,23 +45,40 @@
                                     return "<a href=\"?" . $query . "\" class=\"hover:underline\">$label $arrow</a>";
                                 }
                             @endphp
-
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <th
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider sticky top-0 bg-gray-50 z-10">
                                 {!! sortLink('Waktu', 'sisa_waktu') !!}
                             </th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <th
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider sticky top-0 bg-gray-50 z-10">
                                 {!! sortLink('Deadline', 'deadline') !!}
                             </th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <th
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider sticky top-0 bg-gray-50 z-10">
                                 <label>keterangan</label>
                             </th>
-                            <th class="px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Actions
+                            <th
+                                class="px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider sticky top-0 bg-gray-50 z-10">
+                                <div class="mt-2">
+                                    <form method="GET" class="flex items-center gap-2">
+                                        <select name="status" onchange="this.form.submit()"
+                                            class="border px-2 py-1 rounded-md shadow text-xs w-full sm:w-48">
+                                            <option value="" {{ request('status') === null ? 'selected' : '' }}>
+                                                Semua Status</option>
+                                            <option value="0" {{ request('status') == '0' ? 'selected' : '' }}>On
+                                                Progress</option>
+                                            <option value="1" {{ request('status') == '1' ? 'selected' : '' }}>On
+                                                Review</option>
+                                            <option value="2" {{ request('status') == '2' ? 'selected' : '' }}>
+                                                Completed</option>
+                                        </select>
+                                    </form>
+                                </div>
                             </th>
                         </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
-                        @foreach ($tasks as $r)
+                        @forelse ($tasks as $r)
                             <tr>
                                 @php
                                     $deadline = \Carbon\Carbon::parse($r->deadline);
@@ -91,27 +108,66 @@
 
                                 <td class="px-6 py-4 whitespace-normal text-sm text-gray-900">{{ $r->keterangan }}</td>
                                 <td class="px-6 py-4 text-center align-middle">
-                                    @if ($r->status == 1)
-                                        <a href="{{ route('task.preview', $r->id) }}"
-                                            class="inline-block
-                                            bg-yellow-400 text-white text-xs hover:bg-yellow-500 focus:ring-4 font-semibold px-3 py-1 rounded-lg
-                                            shadow-sm">
-                                            On Review
-                                        </a>
-                                    @else
-                                        <a href="{{ route('task.preview', $r->id) }}"
-                                            class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2">
-                                            Preview
-                                        </a>
-                                    @endif
+                                    @switch($r->status)
+                                        @case(0)
+                                            <a href="{{ route('task.preview', $r->id) }}"
+                                                class="inline-block bg-blue-600 text-white text-xs hover:bg-blue-700 focus:ring-4 font-semibold px-3 py-1 rounded-lg shadow-sm">
+                                                On Progress
+                                            </a>
+                                        @break
+
+                                        @case(1)
+                                            <a href="{{ route('task.preview', $r->id) }}"
+                                                class="inline-block bg-yellow-400 text-white text-xs hover:bg-yellow-500 focus:ring-4 font-semibold px-3 py-1 rounded-lg shadow-sm">
+                                                On Review
+                                            </a>
+                                        @break
+
+                                        @case(2)
+                                            <a href="{{ route('task.preview', $r->id) }}"
+                                                class="inline-block bg-green-600 text-white text-xs hover:bg-green-700 focus:ring-4 font-semibold px-3 py-1 rounded-lg shadow-sm">
+                                                Completed
+                                            </a>
+                                        @break
+
+                                        @default
+                                            <a href="{{ route('task.preview', $r->id) }}"
+                                                class="inline-block bg-gray-400 text-white text-xs hover:bg-gray-500 focus:ring-4 font-semibold px-3 py-1 rounded-lg shadow-sm">
+                                                Unknown
+                                            </a>
+                                    @endswitch
                                 </td>
                             </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-                {{ $tasks->links() }}
+                            @empty
+                                <tr>
+                                    <td colspan="4" class="text-center text-sm text-gray-500 py-6">
+                                        Tidak ada task yang ditemukan.
+                                    </td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                    {{ $tasks->appends(request()->query())->links() }}
+                </div>
             </div>
         </div>
-    </div>
 
-</x-app-layout>
+    </x-app-layout>
+
+    <script>
+        document.getElementById('filterStatus').addEventListener('change', function() {
+            const selectedStatus = this.value;
+            const rows = document.querySelectorAll('tbody tr');
+
+            rows.forEach(row => {
+                const statusCell = row.querySelector('.status-cell');
+                const rowStatus = statusCell ? statusCell.dataset.status : '';
+
+                if (selectedStatus === '' || rowStatus === selectedStatus) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        });
+    </script>

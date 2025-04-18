@@ -78,10 +78,12 @@
                             @enderror
                         </div>
                         <div class="flex">
-                            <button type="submit"
-                                class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
-                                Submit
-                            </button>
+                            @if (Auth::user()->role != 2)
+                                <button type="submit"
+                                    class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                                    Submit
+                                </button>
+                            @endif
                         </div>
                     </form>
                 @else
@@ -93,15 +95,24 @@
                         </a>
                     </div>
                 @endif
-                @if (Auth::user()->role == 2)
-                    <button type="button"
-                        class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
-                        Revisi
-                    </button>
-                    <button type="button"
-                        class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
-                        Complate
-                    </button>
+                @if (Auth::user()->role == 2 && $task->status == 1)
+                    <div class="flex gap-2 mt-2">
+                        <form action="{{ route('task.revisi', $task->id) }}" method="POST">
+                            @csrf
+                            <button type="submit"
+                                class="bg-blue-600 text-white px-4 py-2 rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                                Revisi
+                            </button>
+                        </form>
+                        <form action="{{ route('task.complete', $task->id) }}" method="POST">
+                            @csrf
+                            <button type="submit"
+                                class="bg-green-600 text-white px-4 py-2 rounded-lg shadow-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2">
+                                Complete
+                            </button>
+                        </form>
+                        </form>
+                    </div>
                 @endif
             </div>
         </div>

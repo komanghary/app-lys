@@ -13,19 +13,23 @@ class UserTaskController extends Controller
     {
         $query = TTask::where("user_id", $request->user()->id);
 
+        // ✅ Tambahkan filter status di sini
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
         // Filter pencarian
         if ($request->filled('search')) {
             $query->where('keterangan', 'like', '%' . $request->search . '%');
         }
 
-        // Sortable fields
+        // Sorting
         $sortableFields = ['created_at', 'deadline', 'keterangan', 'sisa_waktu'];
         $sort = $request->get('sort');
         $direction = $request->get('direction', 'asc');
 
         if (in_array($sort, $sortableFields)) {
             if ($sort === 'sisa_waktu') {
-                // Sisa waktu pendek = deadline terdekat, jadi tetap urutkan berdasarkan deadline
                 $query->orderBy('deadline', $direction);
             } else {
                 $query->orderBy($sort, $direction);
@@ -38,6 +42,7 @@ class UserTaskController extends Controller
 
         return view("task.list", compact("tasks"));
     }
+
 
     public function preview($id)
     {

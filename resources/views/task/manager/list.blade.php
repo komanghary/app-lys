@@ -40,12 +40,11 @@
                         Tambah Task
                     </a>
 
-                    <form method="GET" action="{{ route('task.manager.list') }}"
-                        class="flex flex-col sm:flex-row items-center gap-2 w-full sm:w-auto">
+                    <form method="GET" action="{{ route('task.manager.list') }}" class="flex items-center gap-2">
                         <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari task..."
-                            class="border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 w-full sm:w-64 p-2.5">
+                            class="border px-3 py-2 rounded-md shadow text-sm w-64">
                         <button type="submit"
-                            class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 w-full sm:w-auto dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
+                            class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm hover:bg-blue-700">
                             Cari
                         </button>
                     </form>
@@ -53,6 +52,30 @@
 
                 {{-- Tabel Task --}}
                 <div class="overflow-x-auto">
+                    <form method="GET" action="{{ route('task.manager.list') }}"
+                        class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6" onchange="this.form.submit()">
+                        {{-- Filter Nama (Dropdown User) --}}
+                        <select name="user_id" class="border px-3 py-2 rounded-md shadow text-sm w-full"
+                            onchange="this.form.submit()">
+                            <option value="">Semua Pegawai
+                            </option>
+                            @foreach ($users as $user)
+                                <option value="{{ $user->id }}" @selected(request('user_id') == $user->id)>
+                                    {{ $user->name }}
+                                </option>
+                            @endforeach
+                        </select>
+
+                        {{-- Filter Status --}}
+                        <select name="status" class="border px-3 py-2 rounded-md shadow text-sm w-full"
+                            onchange="this.form.submit()">
+                            <option value="">Semua Status
+                            </option>
+                            <option value="0" @selected(request('status') === '0')>Ongoing</option>
+                            <option value="1" @selected(request('status') === '1')>Review</option>
+                            <option value="2" @selected(request('status') === '2')>Complated</option>
+                        </select>
+                    </form>
                     <table class="min-w-full divide-y divide-gray-200">
                         <thead class="bg-gray-50">
                             <tr>
@@ -69,7 +92,8 @@
                         <tbody class="bg-white divide-y divide-gray-200">
                             @foreach ($tasks as $r)
                                 <tr>
-                                    <td class="px-6 py-4 text-sm text-gray-900 whitespace-nowrap">{{ $r->user->name }}
+                                    <td class="px-6 py-4 text-sm text-gray-900 whitespace-nowrap">
+                                        {{ $r->user->name }}
                                     </td>
                                     {{-- <td class="px-6 py-4 text-sm text-gray-900 whitespace-nowrap">{{ $r->created_at }}
                                     </td>
@@ -100,15 +124,26 @@
                                         {{ $deadline->translatedFormat('l, d F - H:i') }}
                                     </td>
                                     <td class="px-6 py-4 text-sm text-gray-500 break-words">{{ $r->keterangan }}</td>
-                                    <td class="px-6 py-4 text-sm font-medium whitespace-nowrap">
-                                        <a href="{{ route('task.manager.edit', $r->id) }}"
-                                            class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 mb-2 inline-block">
-                                            Edit
-                                        </a>
-                                        <a href="{{ route('task.preview', $r->id) }}"
-                                            class="text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-4 py-2 inline-block">
-                                            Preview
-                                        </a>
+                                    <td class="px-6 py-4 text-sm font-medium whitespace-nowrap text-center">
+                                        @if ($r->status == 0)
+                                            <a href="{{ route('task.manager.edit', $r->id) }}"
+                                                class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 mb-2 inline-block">
+                                                Edit
+                                            </a>
+                                            <a href="{{ route('task.preview', $r->id) }}"
+                                                class="text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-4 py-2 inline-block">
+                                                Preview
+                                            </a>
+                                        @elseif ($r->status == 1)
+                                            <a href="{{ route('task.preview', $r->id) }}"
+                                                class="text-white bg-yellow-500 hover:bg-yellow-600 focus:ring-4 focus:ring-yellow-300 font-medium rounded-lg text-sm px-4 py-2 inline-block">
+                                                Review Task
+                                            </a>
+                                        @else
+                                            <a href="{{ route('task.preview', $r->id) }}"
+                                                class="text-white bg-green-500 hover:bg-green-600 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-4 py-2 inline-block">
+                                                Task Complated
+                                        @endif
                                     </td>
                                 </tr>
                             @endforeach
@@ -118,10 +153,28 @@
 
                 {{-- Pagination --}}
                 <div class="mt-4">
-                    {{ $tasks->appends(['search' => request('search')])->links() }}
+                    {{ $tasks->appends(request()->query())->links() }}
                 </div>
 
             </div>
         </div>
     </div>
 </x-app-layout>
+
+<script>
+    document.getElementById('filterStatus').addEventListener('change', function() {
+        const selectedStatus = this.value;
+        const rows = document.querySelectorAll('tbody tr');
+
+        rows.forEach(row => {
+            const statusCell = row.querySelector('.status-cell');
+            const rowStatus = statusCell ? statusCell.dataset.status : '';
+
+            if (selectedStatus === '' || rowStatus === selectedStatus) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    });
+</script>
