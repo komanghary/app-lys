@@ -79,14 +79,20 @@
                     <table class="min-w-full divide-y divide-gray-200">
                         <thead class="bg-gray-50">
                             <tr>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nama</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Sisa Waktu
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 whitespace-nowrap">Nama
                                 </th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Deadline
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 whitespace-nowrap">Sisa
+                                    Waktu
                                 </th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Keterangan
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 whitespace-nowrap">
+                                    Deadline
                                 </th>
-                                <th class="px-6 py-3 text-xs font-medium text-gray-500 uppercase">Actions</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 whitespace-nowrap">
+                                    Keterangan
+                                </th>
+                                <th class="px-6 py-3 text-xs font-medium text-gray-500 whitespace-nowrap text-center ">
+                                    Actions
+                                </th>
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
@@ -95,12 +101,15 @@
                                     <td class="px-6 py-4 text-sm text-gray-900 whitespace-nowrap">
                                         {{ $r->user->name }}
                                     </td>
+
                                     {{-- <td class="px-6 py-4 text-sm text-gray-900 whitespace-nowrap">{{ $r->created_at }}
                                     </td>
                                     <td class="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">{{ $r->deadline }}
                                     </td> --}}
                                     @php
-                                        $deadline = \Carbon\Carbon::parse($r->deadline);
+                                        $deadline = $r->child
+                                            ? \Carbon\Carbon::parse($r->child->deadline)
+                                            : \Carbon\Carbon::parse($r->deadline);
                                         $now = \Carbon\Carbon::now();
                                     @endphp
 
@@ -115,7 +124,9 @@
                                     </td>
 
                                     @php
-                                        $deadline = \Carbon\Carbon::parse($r->deadline);
+                                        $deadline = $r->child
+                                            ? \Carbon\Carbon::parse($r->child->deadline)
+                                            : \Carbon\Carbon::parse($r->deadline);
                                     @endphp
 
                                     <td
@@ -123,9 +134,31 @@
                                     {{ $deadline->isPast() ? 'text-red-600' : 'text-green-600' }}">
                                         {{ $deadline->translatedFormat('l, d F - H:i') }}
                                     </td>
-                                    <td class="px-6 py-4 text-sm text-gray-500 break-words">{{ $r->keterangan }}</td>
+                                    <td class="px-6 py-4 text-sm text-gray-500 break-words">
+                                        @if ($r->child)
+                                            {{ $r->child->keterangan }}
+                                        @else
+                                            {{ $r->keterangan }}
+                                        @endif
+                                    </td>
+
                                     <td class="px-6 py-4 text-sm font-medium whitespace-nowrap text-center">
-                                        @if ($r->status == 0)
+                                        {{-- Jika ini adalah TASK BARU yang telah direvisi --}}
+                                        @if ($r->child && $r->child->status == 1)
+                                            <a href="{{ route('task.preview', $r->id) }}"
+                                                class="text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-4 py-2 inline-block">
+                                                Review Revisi
+                                            </a>
+
+                                            {{-- Jika ini adalah TASK BARU hasil revisi --}}
+                                        @elseif ($r->child && $r->child->status == 0)
+                                            <a href="{{ route('task.preview', $r->id) }}"
+                                                class="text-white bg-indigo-500 hover:bg-indigo-600 focus:ring-4 focus:ring-indigo-300 font-medium rounded-lg text-sm px-4 py-2 inline-block">
+                                                Preview Revisi
+                                            </a>
+
+                                            {{-- Task status 0 (baru dibuat) --}}
+                                        @elseif ($r->status == 0)
                                             <a href="{{ route('task.manager.edit', $r->id) }}"
                                                 class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 mb-2 inline-block">
                                                 Edit
@@ -134,15 +167,20 @@
                                                 class="text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-4 py-2 inline-block">
                                                 Preview
                                             </a>
+
+                                            {{-- Task status 1 (review) --}}
                                         @elseif ($r->status == 1)
                                             <a href="{{ route('task.preview', $r->id) }}"
                                                 class="text-white bg-yellow-500 hover:bg-yellow-600 focus:ring-4 focus:ring-yellow-300 font-medium rounded-lg text-sm px-4 py-2 inline-block">
                                                 Review Task
                                             </a>
+
+                                            {{-- Task selesai --}}
                                         @else
                                             <a href="{{ route('task.preview', $r->id) }}"
                                                 class="text-white bg-green-500 hover:bg-green-600 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-4 py-2 inline-block">
-                                                Task Complated
+                                                Task Completed
+                                            </a>
                                         @endif
                                     </td>
                                 </tr>

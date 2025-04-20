@@ -6,6 +6,11 @@
         </h2>
     </x-slot>
 
+    @push('scripts')
+        <script src="https://js.pusher.com/7.0/pusher.min.js"></script>
+        <script src="{{ asset('js/echo.js') }}"></script> <!-- Jika menggunakan Echo standalone -->
+    @endpush
+
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <!-- TABEL 1 -->
@@ -111,30 +116,31 @@
                                     @switch($r->status)
                                         @case(0)
                                             <a href="{{ route('task.preview', $r->id) }}"
-                                                class="inline-block bg-blue-600 text-white text-xs hover:bg-blue-700 focus:ring-4 font-semibold px-3 py-1 rounded-lg shadow-sm">
+                                                class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 inline-block">
                                                 On Progress
                                             </a>
                                         @break
 
                                         @case(1)
                                             <a href="{{ route('task.preview', $r->id) }}"
-                                                class="inline-block bg-yellow-400 text-white text-xs hover:bg-yellow-500 focus:ring-4 font-semibold px-3 py-1 rounded-lg shadow-sm">
+                                                class="text-white bg-yellow-500 hover:bg-yellow-600 focus:ring-4 focus:ring-yellow-300 font-medium rounded-lg text-sm px-4 py-2 inline-block">
                                                 On Review
                                             </a>
                                         @break
 
                                         @case(2)
                                             <a href="{{ route('task.preview', $r->id) }}"
-                                                class="inline-block bg-green-600 text-white text-xs hover:bg-green-700 focus:ring-4 font-semibold px-3 py-1 rounded-lg shadow-sm">
+                                                class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-4 py-2 inline-block">
                                                 Completed
                                             </a>
                                         @break
 
-                                        @default
+                                        @case(revisi != 0)
                                             <a href="{{ route('task.preview', $r->id) }}"
-                                                class="inline-block bg-gray-400 text-white text-xs hover:bg-gray-500 focus:ring-4 font-semibold px-3 py-1 rounded-lg shadow-sm">
-                                                Unknown
+                                                class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 inline-block">
+                                                Revisi On Progress
                                             </a>
+                                        @break
                                     @endswitch
                                 </td>
                             </tr>
@@ -153,7 +159,6 @@
         </div>
 
     </x-app-layout>
-
     <script>
         document.getElementById('filterStatus').addEventListener('change', function() {
             const selectedStatus = this.value;
@@ -170,4 +175,16 @@
                 }
             });
         });
+        Echo.private(`task.${userId}`)
+            .listen('TaskAssigned', (event) => {
+                console.log('Task Assigned:', event);
+                // Update tampilan atau tampilkan notifikasi di sini
+            });
+        Echo.private(`task.${userId}`)
+            .listen('TaskAssigned', (event) => {
+                // Misalnya kita ingin menambah notifikasi baru ke dalam list
+                const notification = event.task; // atau informasi lain dari event
+                // Lakukan update tampilan, misalnya menambahkan elemen baru di DOM
+                document.getElementById("notifications").innerHTML += `<p>${notification}</p>`;
+            });
     </script>

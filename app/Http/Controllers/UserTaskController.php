@@ -52,8 +52,12 @@ class UserTaskController extends Controller
         if (auth()->user()->role == 1 && $task->user_id != auth()->id()) {
             abort(403, 'Anda tidak memiliki akses ke task ini.');
         }
+        $revisions = TTask::with('user')
+            ->where('revisi', $id)
+            ->orderByDesc('id') // yang terbaru di atas
+            ->get();
 
-        return view('task.preview', compact('task'));
+        return view('task.preview', compact('task', 'revisions'));
     }
     public function uploadFile(Request $request, $id)
     {

@@ -17,9 +17,11 @@
                             magang</label>
                         <select id="nama_pegawai" name="user_id"
                             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.50">
-                            <option selected>Nama pegawai magang</option>
+                            <option value="" disabled {{ old('user_id', $task?->user_id) ? '' : 'selected' }}>
+                                Pilih pegawai magang</option>
                             @foreach ($users as $r)
-                                <option value="{{ $r->id }}" @selected(old('user_id', $task?->user_id) == $r->id)>{{ $r->name }}
+                                <option value="{{ $r->id }}" @selected(old('user_id', $task?->user_id) == $r->id)>
+                                    {{ $r->name }}
                                 </option>
                             @endforeach
                         </select>
