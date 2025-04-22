@@ -6,12 +6,16 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class UserTaskController extends Controller
 {
     public function list(Request $request)
     {
-        $query = TTask::where("user_id", $request->user()->id);
+        $query = TTask::where([
+            "user_id" => Auth::user()->id,
+            "revisi" => 0,
+        ]);
 
         // ✅ Tambahkan filter status di sini
         if ($request->filled('status')) {
@@ -39,6 +43,11 @@ class UserTaskController extends Controller
         }
 
         $tasks = $query->paginate(10)->withQueryString();
+
+        foreach ($tasks as $task) {
+            $query2 = TTask::where('revisi', $task->id);
+            $task->child = $query2->orderBy('created_at', 'desc')->first();
+        }
 
         return view("task.list", compact("tasks"));
     }

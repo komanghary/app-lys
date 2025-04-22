@@ -13,7 +13,7 @@ class ManagerTaskController extends Controller
 {
     public function index(Request $request)
     {
-        $users = \App\Models\User::orderBy('name')->get(); // ambil untuk dropdown
+        $users = \App\Models\User::where('role', 1)->orderBy('name')->get();
         $query = TTask::with('user')->where('revisi', 0);
 
         if ($request->user_id) {
@@ -139,29 +139,35 @@ class ManagerTaskController extends Controller
     {
         $task = TTask::findOrFail($id);
 
-        // Cek hanya Manager yang boleh (role 2) dan task sedang On Review (status 1)
-        if (auth()->role == 2 && $task->status == 1) {
-            $task->status = 2; // set ke Completed
-            $task->save();
+        // Cek hanya Manager (role 2) dan task status harus On Review (1)
+        if (auth()->user()->role == 2 && $task->status == 1) {
+            // Ambil ID parent (jika ini child)
+            $parentId = $task->revisi != 0 ? $task->revisi : $task->id;
 
-            return redirect()->route('task-manager')->with('success', 'Task berhasil diselesaikan.');
+            // Update parent
+            TTask::where('id', $parentId)->update(['status' => 2]);
+
+            // Update semua child yang revisi == parentId
+            TTask::where('revisi', $parentId)->update(['status' => 2]);
+
+            return redirect()->route('task.manager.list')->with('success', 'Task berhasil diselesaikan.');
         }
 
-        return redirect()->route('task-manager')->with('success', 'Task berhasil diselesaikan.');
+        return redirect()->route('task.manager.list')->with('error', 'Gagal menyelesaikan task.');
     }
     public function revisi($id)
     {
         $task = TTask::findOrFail($id);
 
-        // Cek apakah ini adalah child
-        $parentId = $task->revisi ?? $task->id;
+        // Ambil ID parent jika ini adalah child
+        $parentId = ($task->revisi && $task->revisi != 0) ? $task->revisi : $task->id;
 
         $newTask = TTask::create([
             'user_id' => $task->user_id,
             'deadline' => $task->deadline,
             'status' => 0,
             'keterangan' => $task->keterangan,
-            'revisi' => $parentId, // selalu mengarah ke parent ID
+            'revisi' => $parentId, // sekarang pasti benar
             // kolom lain yang diperlukan...
         ]);
 
