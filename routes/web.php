@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ManagerTaskController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TaskController;
@@ -12,9 +13,7 @@ Route::get('/', function () {
 
 Route::middleware(['auth'])->group(function () {
     // Dashboard Pegawai
-    Route::get('/dashboard', function () {
-        return view('dashboard');
-    })->name('dashboard');
+    Route::get('/dashboard', [DashboardController::class, "index"])->name('dashboard');
 
     Route::get('/revisi', function () {
         return view('revisi');
