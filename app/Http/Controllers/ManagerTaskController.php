@@ -132,8 +132,21 @@ class ManagerTaskController extends Controller
     public function delete($id)
     {
         $task = TTask::findOrFail($id);
-        $task->delete();
-        return redirect()->route("task.manager.list")->with("success", "Berhasil menghapus task");
+
+        // Cek role manager
+        if (auth()->user()->role != 2) {
+            abort(403, 'Unauthorized');
+        }
+
+        // Cek hanya task yang belum dikerjakan (status == 0) yang bisa dihapus
+        if ($task->status != 0) {
+            return redirect()->back()->with('error', 'Task hanya bisa dihapus jika belum dikerjakan.');
+        }
+
+        // Soft delete
+        $task->update(['deleted_at' => now()]);
+
+        return redirect()->route('task.manager.list')->with('success', 'Berhasil menghapus task.');
     }
     public function markAsCompleted($id)
     {
@@ -141,14 +154,22 @@ class ManagerTaskController extends Controller
 
         // Cek hanya Manager (role 2) dan task status harus On Review (1)
         if (auth()->user()->role == 2 && $task->status == 1) {
+            $now = now();
+
             // Ambil ID parent (jika ini child)
             $parentId = $task->revisi != 0 ? $task->revisi : $task->id;
 
             // Update parent
-            TTask::where('id', $parentId)->update(['status' => 2]);
+            TTask::where('id', $parentId)->update([
+                'status' => 2,
+                'completed_at' => $now
+            ]);
 
             // Update semua child yang revisi == parentId
-            TTask::where('revisi', $parentId)->update(['status' => 2]);
+            TTask::where('revisi', $parentId)->update([
+                'status' => 2,
+                'completed_at' => $now
+            ]);
 
             return redirect()->route('task.manager.list')->with('success', 'Task berhasil diselesaikan.');
         }

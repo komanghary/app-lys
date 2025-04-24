@@ -61,6 +61,9 @@ class UserTaskController extends Controller
         if (auth()->user()->role == 1 && $task->user_id != auth()->id()) {
             abort(403, 'Anda tidak memiliki akses ke task ini.');
         }
+        if ($task->revisi != 0) {
+            return redirect()->route('task.preview', $task->revisi);
+        }
         $revisions = TTask::with('user')
             ->where('revisi', $id)
             ->orderByDesc('id') // yang terbaru di atas

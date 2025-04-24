@@ -10,12 +10,17 @@
                 <h3 class="text-lg font-bold">Deadline:</h3>
                 @php
                     $deadline = \Carbon\Carbon::parse($task->deadline);
+                    $updated = \Carbon\Carbon::parse($task->updated_at);
+
+                    $deadlineClass = 'text-sm italic'; // default
+
+                    if ($task->status != 0) {
+                        $deadlineClass = $updated->lessThanOrEqualTo($deadline) ? 'text-green-600' : 'text-red-600';
+                    }
                 @endphp
 
-                <p
-                    class="py-4 font-semibold
-                    {{ $deadline->isPast() ? 'text-red-600' : 'text-green-600' }}">
-                    {{ $deadline->translatedFormat('l, d F - H:i') }}
+                <p class="text-sm font-medium {{ $deadlineClass }}">
+                    {{ $deadline->translatedFormat('l, d F Y - H:i') }}
                 </p>
                 <h3 class="text-lg font-bold mt-4">Status Submit:</h3>
                 @php
@@ -24,6 +29,22 @@
                 @endphp
 
                 @if ($task->status == 1)
+                    @if ($updated->greaterThan($deadline))
+                        <p class="font-semibold py-4 text-red-600">
+                            Dikirim: {{ $updated->translatedFormat('l, d F - H:i') }} <br>
+                            <span class="text-sm italic">Telat
+                                {{ $deadline->diffForHumans($updated, [
+                                    'parts' => 2,
+                                    'short' => true,
+                                    'syntax' => \Carbon\CarbonInterface::DIFF_RELATIVE_TO_NOW,
+                                ]) }}</span>
+                        </p>
+                    @else
+                        <p class="font-semibold py-4 text-green-600">
+                            Dikirim: {{ $updated->translatedFormat('l, d F - H:i') }}
+                        </p>
+                    @endif
+                @elseif ($task->status == 2)
                     @if ($updated->greaterThan($deadline))
                         <p class="font-semibold py-4 text-red-600">
                             Dikirim: {{ $updated->translatedFormat('l, d F - H:i') }} <br>
@@ -65,7 +86,7 @@
                         <p class="text-gray-500">Tidak ada file yang diupload.</p>
                     @endif
                 </div>
-                @if (!$task->file_done)
+                @if (!$task->file_done && Auth::user()->role == 1)
                     <form action="{{ route('task.upload', $task->id) }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         <div class="mb-6">
@@ -86,7 +107,7 @@
                             @endif
                         </div>
                     </form>
-                @else
+                @elseif ($task->file_done)
                     <div class="mb-6">
                         <h3 class="text-lg font-bold">File task:</h3>
                         <a href="{{ asset('storage/' . $task->file_done) }}"
@@ -117,6 +138,18 @@
                             </button>
                         </form>
                     </div>
+                @elseif (Auth::user()->role == 2 && $task->status == 0)
+                    <div class="flex gap-2 mt-2">
+                        <form action="{{ route('task.manager.delete', $task->id) }}" method="POST"
+                            onsubmit="return confirm('Apakah Anda yakin ingin menghapus task ini?');">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit"
+                                class="bg-red-600 text-white px-4 py-2 rounded-lg shadow-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2">
+                                Hapus
+                            </button>
+                        </form>
+                    </div>
                 @endif
             </div>
             @if ($revisions->count() > 0)
@@ -125,11 +158,23 @@
                     <div class="bg-white p-6 shadow rounded-lg mb-6">
                         <h3 class="text-lg font-bold">Deadline:</h3>
                         @php
+                            // Ambil task yang akan dicek: kalau ada child, pakai child-nya
+                            $activeTask = $task->child ?? $task;
+
                             $deadline = \Carbon\Carbon::parse($revisi->deadline);
+                            $updated = \Carbon\Carbon::parse($revisi->updated_at);
+
+                            $deadlineClass = 'text-gray-800'; // default
+
+                            if ($activeTask->status != 0) {
+                                $deadlineClass = $updated->lessThanOrEqualTo($deadline)
+                                    ? 'text-green-600'
+                                    : 'text-red-600';
+                            }
                         @endphp
 
-                        <p class="py-4 font-semibold {{ $deadline->isPast() ? 'text-red-600' : 'text-green-600' }}">
-                            {{ $deadline->translatedFormat('l, d F - H:i') }}
+                        <p class="text-sm font-medium {{ $deadlineClass }}">
+                            {{ $deadline->translatedFormat('l, d F Y - H:i') }}
                         </p>
 
                         <h3 class="text-lg font-bold mt-4">Status Submit:</h3>
@@ -138,6 +183,22 @@
                         @endphp
 
                         @if ($revisi->status == 1)
+                            @if ($updated->greaterThan($deadline))
+                                <p class="font-semibold py-4 text-red-600">
+                                    Dikirim: {{ $updated->translatedFormat('l, d F - H:i') }} <br>
+                                    <span class="text-sm italic">Telat
+                                        {{ $deadline->diffForHumans($updated, [
+                                            'parts' => 2,
+                                            'short' => true,
+                                            'syntax' => \Carbon\CarbonInterface::DIFF_RELATIVE_TO_NOW,
+                                        ]) }}</span>
+                                </p>
+                            @else
+                                <p class="font-semibold py-4 text-green-600">
+                                    Dikirim: {{ $updated->translatedFormat('l, d F - H:i') }}
+                                </p>
+                            @endif
+                        @elseif ($task->status == 2)
                             @if ($updated->greaterThan($deadline))
                                 <p class="font-semibold py-4 text-red-600">
                                     Dikirim: {{ $updated->translatedFormat('l, d F - H:i') }} <br>
@@ -245,6 +306,7 @@
                                 </form>
                             </div>
                         @endif
+
                     </div>
                 @endforeach
             @endif

@@ -114,13 +114,17 @@
                                     @endphp
 
                                     <td
-                                        class="px-6 py-4 text-sm text-gray-900 whitespace-nowrap
-                                {{ $deadline->greaterThan($now) ? 'text-green-600' : 'text-red-600' }}">
-                                        {{ $deadline->diffForHumans($now, [
-                                            'parts' => 3,
-                                            'short' => true,
-                                            'syntax' => \Carbon\CarbonInterface::DIFF_RELATIVE_TO_NOW,
-                                        ]) }}
+                                        class="px-6 py-4 text-sm whitespace-nowrap
+{{ $r->status == 2 ? 'text-gray-800' : ($deadline->greaterThan($now) ? 'text-green-600' : 'text-red-600') }}">
+                                        @if ($r->status == 2)
+                                            Selesai : {{ date('d F Y - H:i', strtotime($r->completed_at)) }}
+                                        @else
+                                            {{ $deadline->diffForHumans($now, [
+                                                'parts' => 3,
+                                                'short' => true,
+                                                'syntax' => \Carbon\CarbonInterface::DIFF_RELATIVE_TO_NOW,
+                                            ]) }}
+                                        @endif
                                     </td>
 
                                     @php
@@ -130,9 +134,13 @@
                                     @endphp
 
                                     <td
-                                        class="px-6 py-4 text-sm text-gray-900 whitespace-nowrap
-                                    {{ $deadline->isPast() ? 'text-red-600' : 'text-green-600' }}">
-                                        {{ $deadline->translatedFormat('l, d F - H:i') }}
+                                        class="px-6 py-4 text-sm whitespace-nowrap
+{{ $r->status == 2 ? 'text-gray-800' : ($deadline->isPast() ? 'text-red-600' : 'text-green-600') }}">
+                                        @if ($r->status == 2)
+                                            {{ \Carbon\Carbon::parse($r->completed_at)->translatedFormat('l, d F - H:i') }}
+                                        @else
+                                            {{ $deadline->translatedFormat('l, d F - H:i') }}
+                                        @endif
                                     </td>
                                     <td class="px-6 py-4 text-sm text-gray-500 break-words">
                                         @if ($r->child)
