@@ -117,7 +117,7 @@
                                         class="px-6 py-4 text-sm whitespace-nowrap
 {{ $r->status == 2 ? 'text-gray-800' : ($deadline->greaterThan($now) ? 'text-green-600' : 'text-red-600') }}">
                                         @if ($r->status == 2)
-                                            Selesai : {{ date('d F Y - H:i', strtotime($r->completed_at)) }}
+                                            Selesai :{{ date('d F Y - H:i', strtotime($r->completed_at)) }}
                                         @else
                                             {{ $deadline->diffForHumans($now, [
                                                 'parts' => 3,

@@ -19,7 +19,13 @@
 
 <body class="font-sans antialiased">
     <div class="min-h-screen bg-gray-100">
-        @include('layouts.navigation')
+        @if (Auth::check() && Auth::user()->role == 2)
+            @include('layouts.navigation.manager')
+        @elseif (Auth::check() && Auth::user()->role == 0)
+            @include('layouts.navigation.admin')
+        @else
+            @include('layouts.navigation.navigation')
+        @endif
 
         <!-- Page Heading -->
         @isset($header)

@@ -3,7 +3,7 @@
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ManagerTaskController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\TaskController;
+use App\Http\Controllers\IdentitasController;
 use App\Http\Controllers\UserTaskController;
 use Illuminate\Support\Facades\Route;
 
@@ -32,7 +32,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/tasks/{id}/preview', [UserTaskController::class, 'preview'])->name('task.preview');
     Route::post('/task/upload/{id}', [UserTaskController::class, 'uploadFile'])->name('task.upload');
 
-    // Manager
+    // Manager Task
     Route::get('/task-manager', [ManagerTaskController::class, "index"])->name('task.manager.list');
     Route::get('/task-manager/add', [ManagerTaskController::class, "add"])->name('task.manager.add');
     Route::post('/task-manager/add', [ManagerTaskController::class, "store"])->name('task.manager.store');
@@ -42,6 +42,8 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/task/{id}/complete', [ManagerTaskController::class, 'markAsCompleted'])->name('task.complete');
     Route::post('/task/{id}/revisi', [ManagerTaskController::class, 'revisi'])->name('task.revisi');
 
+    // Identitas
+    Route::get('/identitas', [IdentitasController::class, 'index'])->name('identitas');
 
 });
 
