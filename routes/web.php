@@ -5,6 +5,8 @@ use App\Http\Controllers\ManagerTaskController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\IdentitasController;
 use App\Http\Controllers\UserTaskController;
+use App\Http\Controllers\PresensiController;
+use App\Http\Middleware\CheckRole;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -19,34 +21,32 @@ Route::middleware(['auth'])->group(function () {
         return view('revisi');
     })->name('revisi');
 
-    Route::get('/presensi', function () {
-        return view('presensi');
-    })->name('presensi');
+    Route::get('/presensi', [PresensiController::class, 'index'])->name('presensi');
+
+    // Route::get('/presensi', function () {
+    //     return view('presensi');
+    // })->name('presensi');
+    // Route::get('/presensi', [PresensiController::class, 'showCalendar'])->name('presensi.calendar');
+    // Route::get('/presensi', [PresensiController::class, 'index'])->name('presensi.index');
+
+    Route::get('/identitas', [IdentitasController::class, 'index'])->name('identitas');
 
     Route::get('/task/list', [UserTaskController::class, "list"])->name('task.list');
-
-    Route::get('/task/complated', function () {
-        return view('task.complated');
-    })->name('task.complated');
-
     Route::get('/tasks/{id}/preview', [UserTaskController::class, 'preview'])->name('task.preview');
     Route::post('/task/upload/{id}', [UserTaskController::class, 'uploadFile'])->name('task.upload');
 
-    // Manager Task
-    Route::get('/task-manager', [ManagerTaskController::class, "index"])->name('task.manager.list');
-    Route::get('/task-manager/add', [ManagerTaskController::class, "add"])->name('task.manager.add');
-    Route::post('/task-manager/add', [ManagerTaskController::class, "store"])->name('task.manager.store');
-    Route::get('/task-manager/edit/{id}', [ManagerTaskController::class, "edit"])->name('task.manager.edit');
-    Route::post('/task-manager/edit/{id}', [ManagerTaskController::class, "update"])->name('task.manager.update');
-    Route::delete('/task-manager/delete/{id}', [ManagerTaskController::class, 'delete'])->name('task.manager.delete');
-    Route::post('/task/{id}/complete', [ManagerTaskController::class, 'markAsCompleted'])->name('task.complete');
-    Route::post('/task/{id}/revisi', [ManagerTaskController::class, 'revisi'])->name('task.revisi');
 
-    // Identitas
-    Route::get('/identitas', [IdentitasController::class, 'index'])->name('identitas');
+    // Manager Task
+    Route::get('/task-manager', [ManagerTaskController::class, "index"])->name('task.manager.list')->middleware('role:2');
+    Route::get('/task-manager/add', [ManagerTaskController::class, "add"])->name('task.manager.add')->middleware('role:2');
+    Route::post('/task-manager/add', [ManagerTaskController::class, "store"])->name('task.manager.store')->middleware('role:2');
+    Route::get('/task-manager/edit/{id}', [ManagerTaskController::class, "edit"])->name('task.manager.edit')->middleware('role:2');
+    Route::post('/task-manager/edit/{id}', [ManagerTaskController::class, "update"])->name('task.manager.update')->middleware('role:2');
+    Route::delete('/task-manager/delete/{id}', [ManagerTaskController::class, 'delete'])->name('task.manager.delete')->middleware('role:2');
+    Route::post('/task/{id}/complete', [ManagerTaskController::class, 'markAsCompleted'])->name('task.complete')->middleware('role:2');
+    Route::post('/task/{id}/revisi', [ManagerTaskController::class, 'revisi'])->name('task.revisi')->middleware('role:2');
 
 });
-
 
 
 Route::get('/dashboard-admin', function () {

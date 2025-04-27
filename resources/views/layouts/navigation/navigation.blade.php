@@ -89,9 +89,6 @@
             <x-responsive-nav-link :href="route('task.list')" :active="request()->routeIs('task.list')">
                 {{ __('Task List') }}
             </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('task.complated')" :active="request()->routeIs('task.complated')">
-                {{ __('Completed Task') }}
-            </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('revisi')" :active="request()->routeIs('revisi')">
                 {{ __('Revisi') }}
             </x-responsive-nav-link>

@@ -33,15 +33,6 @@
                                 </div>
                             </button>
                         </x-slot>
-
-                        <x-slot name="content">
-                            <x-dropdown-link :href="route('task.list')">
-                                {{ __('Task List') }}
-                            </x-dropdown-link>
-                            <x-dropdown-link :href="route('task.complated')">
-                                {{ __('Completed Task') }}
-                            </x-dropdown-link>
-                        </x-slot>
                     </x-dropdown>
                 </div>
                 <!-- Presensi -->
@@ -108,9 +99,6 @@
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('task.list')" :active="request()->routeIs('task.list')">
                 {{ __('Task List') }}
-            </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('task.complated')" :active="request()->routeIs('task.complated')">
-                {{ __('Completed Task') }}
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('revisi')" :active="request()->routeIs('revisi')">
                 {{ __('Revisi') }}

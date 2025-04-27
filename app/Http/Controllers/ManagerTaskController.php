@@ -5,8 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\TTask;
 use App\Models\User;
 use Illuminate\Http\Request;
-use App\Events\NewTaskAssigned;
-use App\Notifications\NewTaskNotification;
 
 
 class ManagerTaskController extends Controller
