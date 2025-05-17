@@ -12,10 +12,10 @@
         @endpush
 
         <div class="py-12">
-            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 ">
                 <!-- TABEL 1 -->
 
-                <div class="bg-white p-6 shadow rounded-lg mb-4 overflow-x-auto">
+                <div class="bg-white p-10 shadow rounded-lg mb-4 overflow-x-auto">
                     <div class="flex flex-col sm:flex-row justify-between items-center mb-4 px-4">
                         <div class="mb-2 sm:mb-0">
                             <h2 class="font-semibold text-xl text-gray-800 leading-tight">

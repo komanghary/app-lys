@@ -6,68 +6,69 @@
     </x-slot>
 
     <div class="py-12 ">
-        <div class="bg-white pt-8 pb-8 max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="container">
-                <h1 class="text-2xl font-bold mb-4">Daftar Identitas</h1>
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-10">
+                <div class="container">
+                    <h1 class="text-2xl font-bold mb-4">Daftar Identitas</h1>
 
-                <!-- Filter Pencarian -->
-                <div class="mb-4">
-                    <input type="text" id="searchInput" class="border p-2 w-full sm:w-1/3 rounded text-sm"
-                        placeholder="Cari berdasarkan Nama, Email, Instansi, Alamat, No HP" />
-                </div>
+                    <!-- Filter Pencarian -->
+                    <div class="mb-4">
+                        <input type="text" id="searchInput" class="border p-2 w-full sm:w-1/3 rounded text-sm"
+                            placeholder="Cari berdasarkan Nama, Email, Instansi, Alamat, No HP" />
+                    </div>
 
-                @if ($identitas->isEmpty())
-                    <p>Data identitas belum tersedia.</p>
-                @else
-                    <div class="overflow-x-auto">
-                        <table class="table-auto w-full border text-sm sm:text-base">
-                            <thead>
-                                <tr class="bg-gray-200">
-                                    <th
-                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 whitespace-nowrap border">
-                                        Name</th>
-                                    <th
-                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 whitespace-nowrap border">
-                                        Email</th>
-                                    <th
-                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 whitespace-nowrap border">
-                                        Instansi</th>
-                                    <th
-                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 whitespace-nowrap border">
-                                        Alamat</th>
-                                    <th
-                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 whitespace-nowrap border">
-                                        No. HP</th>
-                                </tr>
-                            </thead>
-                            <tbody id="identitasTable">
-                                @foreach ($identitas as $item)
-                                    <tr class="identitas-row">
-                                        <td class="px-6 py-4 text-sm whitespace-normal break-words max-w-xs border">
-                                            {{ $item->user->name }}</td>
-                                        <td class="px-6 py-4 text-sm whitespace-normal break-words max-w-xs border">
-                                            {{ $item->user->email }}</td>
-                                        <td class="px-6 py-4 text-sm whitespace-normal break-words max-w-xs border">
-                                            {{ $item->instansi }}</td>
-                                        <td class="px-6 py-4 text-sm whitespace-normal break-words max-w-xs border">
-                                            {{ $item->alamat }}</td>
-                                        <td class="px-6 py-4 text-sm whitespace-normal break-words max-w-xs border">
-                                            {{ $item->no_hp }}</td>
+                    @if ($identitas->isEmpty())
+                        <p>Data identitas belum tersedia.</p>
+                    @else
+                        <div class="overflow-x-auto">
+                            <table class="table-auto w-full border text-sm sm:text-base">
+                                <thead>
+                                    <tr class="bg-gray-200">
+                                        <th
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 whitespace-nowrap border">
+                                            Name</th>
+                                        <th
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 whitespace-nowrap border">
+                                            Email</th>
+                                        <th
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 whitespace-nowrap border">
+                                            Instansi</th>
+                                        <th
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 whitespace-nowrap border">
+                                            Alamat</th>
+                                        <th
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 whitespace-nowrap border">
+                                            No. HP</th>
                                     </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
+                                </thead>
+                                <tbody id="identitasTable">
+                                    @foreach ($identitas as $item)
+                                        <tr class="identitas-row">
+                                            <td class="px-6 py-4 text-sm whitespace-normal break-words max-w-xs border">
+                                                {{ $item->full_name }}</td>
+                                            <td class="px-6 py-4 text-sm whitespace-normal break-words max-w-xs border">
+                                                {{ $item->user->email }}</td>
+                                            <td class="px-6 py-4 text-sm whitespace-normal break-words max-w-xs border">
+                                                {{ $item->instansi }}</td>
+                                            <td class="px-6 py-4 text-sm whitespace-normal break-words max-w-xs border">
+                                                {{ $item->alamat }}</td>
+                                            <td class="px-6 py-4 text-sm whitespace-normal break-words max-w-xs border">
+                                                {{ $item->no_hp }}</td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
 
-                    <!-- Pagination -->
-                    <div class="mt-4">
-                        {{ $identitas->links() }}
-                    </div>
-                @endif
+                        <!-- Pagination -->
+                        <div class="mt-4">
+                            {{ $identitas->links() }}
+                        </div>
+                    @endif
+                </div>
             </div>
         </div>
     </div>
-
     <script>
         // JavaScript untuk filter pencarian langsung
         const searchInput = document.getElementById('searchInput');
@@ -91,4 +92,5 @@
             });
         });
     </script>
+
 </x-app-layout>

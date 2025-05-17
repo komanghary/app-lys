@@ -1,15 +1,16 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Dashboard') }}
+            {{ __('Manager Dashboard') }}
         </h2>
     </x-slot>
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-10">
                 <div class="flex space-x-4 justify-center items-center h-32">
-                    <div class="flex items-center bg-blue-600 text-white rounded-lg shadow-md p-6 w-full">
+                    <a class="flex items-center bg-blue-600 text-white rounded-lg shadow-md p-6 w-full" link
+                        href="/task-manager?user_id=&status=0">
                         <div class="mr-4">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                                 stroke="currentColor" class="w-12 h-12">
@@ -21,8 +22,9 @@
                             <h3 class="text-sm font-medium">On Progress</h3>
                             <p class="text-2xl font-bold">{{ $progres }}</p>
                         </div>
-                    </div>
-                    <div class="flex items-center bg-purple-600 text-white rounded-lg shadow-md p-6 w-full">
+                    </a>
+                    <a class="flex items-center bg-purple-600 text-white rounded-lg shadow-md p-6 w-full" link
+                        href="/task-manager?user_id=&status=0">
                         <div class="mr-4">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                 stroke-width="1.5" stroke="currentColor" class="w-12 h-12">
@@ -34,8 +36,9 @@
                             <h3 class="text-sm font-medium">Revisi</h3>
                             <p class="text-2xl font-bold">{{ $revisi }}</p>
                         </div>
-                    </div>
-                    <div class="flex items-center bg-orange-600 text-white rounded-lg shadow-md p-6 w-full">
+                    </a>
+                    <a class="flex items-center bg-orange-600 text-white rounded-lg shadow-md p-6 w-full" link
+                        href="/task-manager?user_id=&status=1">
                         <div class="mr-4">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                 stroke-width="1.5" stroke="currentColor" class="h-12 w-12">
@@ -50,20 +53,7 @@
                             <h3 class="text-sm font-medium">Review</h3>
                             <p class="text-2xl font-bold">{{ $review }}</p>
                         </div>
-                    </div>
-                    <div class="flex items-center bg-green-600 text-white rounded-lg shadow-md p-6 w-full">
-                        <div class="mr-4">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                stroke-width="1.5" stroke="currentColor" class="w-12 h-12">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M9 12.75 11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 0 1-1.043 3.296 3.745 3.745 0 0 1-3.296 1.043A3.745 3.745 0 0 1 12 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 0 1-3.296-1.043 3.745 3.745 0 0 1-1.043-3.296A3.745 3.745 0 0 1 3 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 0 1 1.043-3.296 3.746 3.746 0 0 1 3.296-1.043A3.746 3.746 0 0 1 12 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 0 1 3.296 1.043 3.746 3.746 0 0 1 1.043 3.296A3.745 3.745 0 0 1 21 12Z" />
-                            </svg>
-                        </div>
-                        <div>
-                            <h3 class="text-sm font-medium">Complete</h3>
-                            <p class="text-2xl font-bold">{{ $selesai }}</p>
-                        </div>
-                    </div>
+                    </a>
                 </div>
             </div>
         </div>

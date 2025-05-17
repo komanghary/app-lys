@@ -37,6 +37,11 @@
                         {{ __('Presensi') }}
                     </x-nav-link>
                 </div>
+                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                    <x-nav-link :href="route('rekap.form')" :active="request()->routeIs('rekap.form')">
+                        {{ __('Rekap') }}
+                    </x-nav-link>
+                </div>
             </div>
 
             <!-- Settings Dropdown -->
@@ -101,6 +106,9 @@
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('presensi')" :active="request()->routeIs('presensi')">
                 {{ __('Presensi') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('rekap.form')" :active="request()->routeIs('rekap.form')">
+                {{ __('Rekap') }}
             </x-responsive-nav-link>
         </div>
 

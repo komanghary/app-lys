@@ -11,14 +11,7 @@ class TPresensi extends Model
 
     protected $table = 't_presensis'; // Nama tabel kamu, biasanya jamak (optional kalau sesuai Laravel)
 
-    protected $fillable = [
-        'user_id',
-        'tanggal',
-        'jam_masuk',
-        'jam_keluar',
-        'status',
-        'keterangan',
-    ];
+    protected $fillable = ['identitas_id', 'tanggal', 'jam_masuk', 'status', 'keterangan'];
 
     protected $dates = [
         'tanggal',
@@ -29,6 +22,6 @@ class TPresensi extends Model
     // Relasi ke User (jika perlu)
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'identitas_id');
     }
 }
