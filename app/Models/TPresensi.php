@@ -22,6 +22,6 @@ class TPresensi extends Model
     // Relasi ke User (jika perlu)
     public function user()
     {
-        return $this->belongsTo(User::class, 'identitas_id');
+        return $this->belongsTo(User::class, 'identitas_id')->withTrashed();
     }
 }

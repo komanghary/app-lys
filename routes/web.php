@@ -6,6 +6,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\IdentitasController;
 use App\Http\Controllers\UserTaskController;
 use App\Http\Controllers\PresensiController;
+use App\Http\Controllers\ManageAccountController;
 use App\Http\Middleware\CheckRole;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RekapController;
@@ -53,6 +54,15 @@ Route::middleware(['auth'])->group(function () {
 
 });
 
+Route::middleware(['auth',])->group(function () {
+    Route::get('manage-account', [ManageAccountController::class, 'index'])->name('manage.account');
+    Route::put('manage-account/{id}/update', [ManageAccountController::class, 'updateRole'])->name('manage.account.update');
+    Route::delete('manage-account/{id}', [ManageAccountController::class, 'destroy'])->name('manage.account.destroy');
+    Route::post('manage-account/{id}/restore', [ManageAccountController::class, 'restore'])->name('manage.account.restore');
+    Route::post('manage-account/{id}/verify', [ManageAccountController::class, 'verify'])->name('manage.account.verify');
+    Route::delete('/manage-account/{id}/cancel', [ManageAccountController::class, 'cancel'])->name('manage.account.cancel');
+    Route::get('/log', [\App\Http\Controllers\LogActivityController::class, 'index'])->name('log.index');
+});
 
 Route::get('/dashboard-admin', function () {
     return view('dashboard-admin'); // View khusus untuk role 0

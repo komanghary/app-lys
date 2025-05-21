@@ -11,7 +11,7 @@ class DashboardController extends Controller
     {
         // dd(Auth::user()->role);
         if (Auth::user()->role == '0') {
-            return view('dashboard-admin', compact('progres', 'revisi', 'review', 'selesai'));
+            return view('dashboard-admin');
         } elseif (Auth::user()->role == '2') {
             $progres = TTask::where('status', 0)
                 ->where('revisi', '=!', 0)

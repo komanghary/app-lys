@@ -8,6 +8,8 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
+use Illuminate\Support\Facades\Hash;
+use App\Models\User;
 
 class AuthenticatedSessionController extends Controller
 {
@@ -24,20 +26,27 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request): RedirectResponse
     {
-        $request->authenticate();
+        $credentials = $request->validate([
+            'email' => ['required', 'email'],
+            'password' => ['required'],
+        ]);
 
-        $request->session()->regenerate();
+        $user = User::where('email', $credentials['email'])->first();
 
-        // Cek role user setelah login
-        $user = Auth::user();
-
-        if ($user->role == 0) {
-            return redirect()->route('dashboard.admin'); // Dashboard khusus untuk role 0
+        if (!$user || !Hash::check($credentials['password'], $user->password)) {
+            return back()->withErrors([
+                'email' => 'Email atau password salah. atau belum di verifikasi Admin',
+            ])->onlyInput('email');
         }
 
-        return redirect()->intended(route('dashboard', absolute: false));
-    }
+        // Jika password cocok tapi belum diverifikasi
 
+        // Login jika sudah diverifikasi
+        Auth::login($user, $request->boolean('remember'));
+        $request->session()->regenerate();
+
+        return redirect()->intended('/dashboard');
+    }
     /**
      * Destroy an authenticated session.
      */
