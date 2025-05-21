@@ -18,21 +18,21 @@ Route::get('/', function () {
 
 Route::middleware(['auth'])->group(function () {
     // Dashboard Pegawai
-    Route::get('/dashboard', [DashboardController::class, "index"])->name('dashboard');
-    Route::get('/dashboard-manager', [DashboardController::class, "index"])->name('dashboard.manager');
+    Route::get('/dashboard', [DashboardController::class, "index"])->name('dashboard'); // role 1
+    Route::get('/dashboard-manager', [DashboardController::class, "index"])->name('dashboard.manager'); // role 2
 
-    Route::get('/revisi', function () {
-        return view('revisi');
-    })->name('revisi');
-
+    Route::get('/dashboard-admin', function () {
+        return view('dashboard-admin'); // View khusus untuk role 0
+    })->name('dashboard.admin')->middleware('auth');
     Route::get('/presensi', [PresensiController::class, 'index'])->name('presensi');
 
     // Route::get('/presensi', function () {
     //     return view('presensi');
     // })->name('presensi');
     Route::get('/presensi', [PresensiController::class, 'index'])->name('presensi');
-    Route::post('/presensi', [PresensiController::class, 'store'])->name('presensi.store');
-    Route::put('/presensi/{id}', [PresensiController::class, 'update'])->name('presensi.update');
+    Route::post('/presensi', [PresensiController::class, 'store'])->name('presensi.store'); // manager
+    Route::put('/presensi/{id}', [PresensiController::class, 'update'])->name('presensi.update'); // manager
+
 
     Route::get('/identitas', [IdentitasController::class, 'index'])->name('identitas');
 
@@ -41,6 +41,9 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/task/upload/{id}', [UserTaskController::class, 'uploadFile'])->name('task.upload');
 
     // Manager Task
+    Route::get('/revisi', function () {
+        return view('revisi');
+    })->name('revisi');
     Route::get('/task-manager', [ManagerTaskController::class, "index"])->name('task.manager.list');
     Route::get('/task-manager/add', [ManagerTaskController::class, "add"])->name('task.manager.add');
     Route::post('/task-manager/add', [ManagerTaskController::class, "store"])->name('task.manager.store');
@@ -51,8 +54,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/task/{id}/revisi', [ManagerTaskController::class, 'revisi'])->name('task.revisi');
     Route::get('/rekap-laporan', [RekapController::class, 'generateReport'])->name('rekap.download');
     Route::get('/rekap-form', [RekapController::class, 'form'])->name('rekap.form');
-
-});
+}); // ini semua Manager
 
 Route::middleware(['auth',])->group(function () {
     Route::get('manage-account', [ManageAccountController::class, 'index'])->name('manage.account');
@@ -62,12 +64,7 @@ Route::middleware(['auth',])->group(function () {
     Route::post('manage-account/{id}/verify', [ManageAccountController::class, 'verify'])->name('manage.account.verify');
     Route::delete('/manage-account/{id}/cancel', [ManageAccountController::class, 'cancel'])->name('manage.account.cancel');
     Route::get('/log', [\App\Http\Controllers\LogActivityController::class, 'index'])->name('log.index');
-});
-
-Route::get('/dashboard-admin', function () {
-    return view('dashboard-admin'); // View khusus untuk role 0
-})->name('dashboard.admin')->middleware('auth');
-
+}); // ini semua ADMIN
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
