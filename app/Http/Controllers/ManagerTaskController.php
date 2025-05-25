@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\TTask;
 use App\Models\User;
 use Illuminate\Http\Request;
-
+use App\Helpers\LogActivity;
 
 class ManagerTaskController extends Controller
 {
@@ -91,7 +91,7 @@ class ManagerTaskController extends Controller
         }
 
         // Kirim notifikasi
-
+        LogActivity::add('Buat Task', 'Manager membuat task baru: ' . $request->judul);
         return redirect()->route("task.manager.list")->with("success", "Berhasil menambahkan task");
     }
 
@@ -124,6 +124,7 @@ class ManagerTaskController extends Controller
 
         $task->save();
 
+        LogActivity::add('Edit Task', 'Manager mengedit task ID #' . $id);
         return redirect()->route("task.manager.list")->with("success", "Berhasil mengupdate task");
     }
 
@@ -143,6 +144,7 @@ class ManagerTaskController extends Controller
 
         // Soft delete
         $task->update(['deleted_at' => now()]);
+        LogActivity::add('Hapus Task', 'Manager menghapus task ID #' . $id);
 
         return redirect()->route('task.manager.list')->with('success', 'Berhasil menghapus task.');
     }

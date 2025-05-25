@@ -53,7 +53,7 @@ class RekapController extends Controller
             $task_ids = $tasks->pluck('id');
             $task_revisi = TTask::whereIn('revisi', $task_ids)->count();
 
-            $poin_task = ($task_tepat_waktu * 1) + ($task_terlambat * -1);
+            $poin_task = (($task_tepat_waktu + $task_revisi) * 1) + ($task_terlambat * -1);
 
             $identitasId = TIdentitas::where('user_id', $user->id)->pluck('id');
             $presensi = TPresensi::whereIn('identitas_id', $identitasId)
@@ -64,7 +64,7 @@ class RekapController extends Controller
             $izin = $presensi->whereIn('status', [2, 3])->count();
             $alpha = $workingDays - ($hadir + $izin);
 
-            $poin_presensi = ($hadir * 1) + ($alpha * -1);
+            $poin_presensi = (($hadir + $izin) * 1) + ($alpha * -1);
             $total_poin = $poin_task + $poin_presensi;
 
             $data[] = [

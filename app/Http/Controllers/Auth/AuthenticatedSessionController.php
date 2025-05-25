@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
+use App\Helpers\LogActivity;
 
 class AuthenticatedSessionController extends Controller
 {
@@ -39,13 +40,22 @@ class AuthenticatedSessionController extends Controller
             ])->onlyInput('email');
         }
 
-        // Jika password cocok tapi belum diverifikasi
-
-        // Login jika sudah diverifikasi
+        // Login dulu
         Auth::login($user, $request->boolean('remember'));
         $request->session()->regenerate();
 
-        return redirect()->intended('/dashboard');
+        // Baru arahkan sesuai role
+        switch ($user->role) {
+            case 0:
+                LogActivity::add('Login Berhasil', 'User login dengan email ' . $user->email);
+                return redirect()->route('dashboard.admin');
+            case 1:
+                LogActivity::add('Login Berhasil', 'User login dengan email ' . $user->email);
+                return redirect()->route('dashboard');
+            default:
+                LogActivity::add('Login Berhasil', 'User login dengan email ' . $user->email);
+                return redirect()->route('dashboard.manager');
+        }
     }
     /**
      * Destroy an authenticated session.

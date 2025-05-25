@@ -8,7 +8,21 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class TTask extends Model
 {
     use SoftDeletes;
-    protected $guarded = [];
+    protected $casts = [
+        'created_at' => 'datetime',
+        'deadline' => 'datetime',
+    ];
+
+    protected $fillable = [
+        'user_id',
+        'file_done',
+        'deadline',
+        'revisi',
+        'status',
+        'complated_at',
+        'file',
+        'keterangan',
+    ];
 
     public function user()
     {

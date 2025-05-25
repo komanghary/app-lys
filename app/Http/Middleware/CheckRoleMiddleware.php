@@ -16,8 +16,7 @@ class CheckRoleMiddleware
     public function handle(Request $request, Closure $next, int $role): Response
     {
         $user = $request->user();
-        if ($user && $user->role !== 2) {
-            // Redirect to a different route or show an error message
+        if (!$user || $user->role != $role) {
             abort(403, 'Unauthorized action.');
         }
 

@@ -6,7 +6,7 @@ use App\Http\Controllers\ManagerTaskController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\IdentitasController;
 use App\Http\Controllers\UserTaskController;
-use App\Http\Controllers\PresensiController;
+use App\Http\Controllers\TaskCalendarController;
 use App\Http\Controllers\ManageAccountController;
 use App\Http\Middleware\CheckRoleMiddleware;
 use Illuminate\Support\Facades\Route;
@@ -14,6 +14,16 @@ use App\Http\Controllers\RekapController;
 
 
 Route::get('/', function () {
+    if (auth()->check()) {
+        switch (auth()->user()->role) {
+            case 0:
+                return redirect()->route('dashboard.admin');
+            case 1:
+                return redirect()->route('dashboard');
+            default:
+                return redirect()->route('dashboard.manager');
+        }
+    }
     return redirect()->route('login');
 });
 
@@ -23,12 +33,12 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/dashboard', [DashboardController::class, "index"])->name('dashboard'); // role 1
     });
 
-    Route::get('/presensi', [PresensiController::class, 'index'])->name('presensi');
     Route::get('/identitas', [IdentitasController::class, 'index'])->name('identitas');
 
     Route::get('/task/list', [UserTaskController::class, "list"])->name('task.list');
     Route::get('/tasks/{id}/preview', [UserTaskController::class, 'preview'])->name('task.preview');
     Route::post('/task/upload/{id}', [UserTaskController::class, 'uploadFile'])->name('task.upload');
+    Route::get('/task-calendar', [TaskCalendarController::class, 'index'])->name('task.calendar');
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -39,10 +49,7 @@ Route::middleware(['auth'])->group(function () {
     });
 
     // Manager Task
-    Route::middleware([CheckRoleMiddleware::class . ":0", CheckRoleMiddleware::class . ":2"])->group(function () {
-        Route::post('/presensi', [PresensiController::class, 'store'])->name('presensi.store'); // manager
-        Route::put('/presensi/{id}', [PresensiController::class, 'update'])->name('presensi.update'); // manager
-
+    Route::middleware([CheckRoleMiddleware::class . ":2"])->group(function () {
         Route::get('/revisi', function () {
             return view('revisi');
         })->name('revisi');
@@ -58,8 +65,9 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/rekap-form', [RekapController::class, 'form'])->name('rekap.form');
     });
 
+
     // User Admin
-    Route::middleware(CheckRoleMiddleware::class . ":2")->group(function () {
+    Route::middleware(CheckRoleMiddleware::class . ":0")->group(function () {
         Route::get('/dashboard-admin', function () {
             return view('dashboard-admin'); // View khusus untuk role 0
         })->name('dashboard.admin');

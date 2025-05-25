@@ -5,6 +5,7 @@ use App\Models\TTask;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
+use App\Helpers\LogActivity;
 
 class UserTaskController extends Controller
 {
@@ -87,7 +88,7 @@ class UserTaskController extends Controller
 
         $task->save();
 
-        // return back()->with('success', 'File berhasil diupload.');
+        LogActivity::add('Submit Task', 'User mengupload file untuk task ID #' . $task->id);
         return redirect()->route('task.list')->with('success', 'File berhasil diupload.');
 
     }

@@ -24,12 +24,7 @@
                     </x-nav-link>
                 </div>
 
-                <!-- Presensi -->
-                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="route('presensi')" :active="request()->routeIs('presensi')">
-                        {{ __('Presensi') }}
-                    </x-nav-link>
-                </div>
+
             </div>
 
             <!-- Settings Dropdown -->
@@ -92,9 +87,7 @@
             <x-responsive-nav-link :href="route('revisi')" :active="request()->routeIs('revisi')">
                 {{ __('Revisi') }}
             </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('presensi')" :active="request()->routeIs('presensi')">
-                {{ __('Presensi') }}
-            </x-responsive-nav-link>
+
         </div>
 
         <!-- User Settings -->
